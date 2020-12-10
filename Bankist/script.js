@@ -99,9 +99,17 @@ const calcAndDisplayBalance = (movements) => {
   labelBalance.textContent = `${balance} EUR`; 
 }
 
+// Calculating and displaying total withdrawals and deposits
+const calcDisplaySummary = movements => {
+  const deposits = movements.filter(mov => mov > 0).reduce((acc, mov) => acc + mov)
+  const withdrawals = -movements.filter(mov => mov < 0).reduce((acc, mov) => acc + mov)
+  labelSumOut.textContent = `${withdrawals}€`
+  labelSumIn.textContent = `${deposits}€`
+}
+
 displayMovements(account1.movements);
 calcAndDisplayBalance(account1.movements);
-
+calcDisplaySummary(account1.movements);
 
 
 
