@@ -93,8 +93,14 @@ const displayMovements = function(movements) {
   })
 }
 
-displayMovements(account1.movements);
+// Calculating current balance
+const calcAndDisplayBalance = (movements) => {
+  const balance = movements.reduce((acc,movement) => acc + movement, 0);
+  labelBalance.textContent = `${balance} EUR`; 
+}
 
+displayMovements(account1.movements);
+calcAndDisplayBalance(account1.movements);
 
 
 
