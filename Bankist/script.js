@@ -118,6 +118,7 @@ const updateUI = currentAccount => {
 
 createUsernames(accounts);
 
+// login functionality
 let currentAccount;
 btnLogin.addEventListener('click', (e) => {
   e.preventDefault();
@@ -134,7 +135,7 @@ btnLogin.addEventListener('click', (e) => {
   }  
 });
 
-
+//  Transfer functionality
 btnTransfer.addEventListener('click', (e) => {
   e.preventDefault();
   const amount = Number(inputTransferAmount.value);
@@ -149,7 +150,7 @@ btnTransfer.addEventListener('click', (e) => {
   }
 })
 
-
+// Close account functionality
 btnClose.addEventListener('click', (e) => {
   e.preventDefault();
   if (currentAccount.username === inputCloseUsername.value && currentAccount.pin === Number(inputClosePin.value)) {
@@ -161,7 +162,14 @@ btnClose.addEventListener('click', (e) => {
   }
 })
 
-
-
-
+// Loan functionality
+btnLoan.addEventListener('click', (e) => {
+  e.preventDefault();
+  const loanAmount = Number(inputLoanAmount.value);
+  if (loanAmount && loanAmount > 0 && currentAccount.movements.some(mov => mov >= 0.1 * loanAmount)) {
+    currentAccount.movements.push(loanAmount);
+    updateUI(currentAccount);
+    inputLoanAmount.value = '';
+  }
+})
 
