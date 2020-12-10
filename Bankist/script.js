@@ -68,13 +68,14 @@ const inputCloseUsername = select('.form__input--user');
 const inputClosePin = select('.form__input--pin');
 
 // Creating usernames based on initials of an owner
-accounts.forEach(function(account) {
-  const names = account.owner.split(' ');
-  let initials = '';
-  names.forEach(name => initials += name.toLowerCase()[0]);
-  account['username'] = initials;
-})
-
+const createUsernames = (accounts) => {
+  accounts.forEach(function(account) {
+    const names = account.owner.split(' ');
+    let initials = '';
+    names.forEach(name => initials += name.toLowerCase()[0]);
+    account['username'] = initials;
+  })
+}
 // Displaying transactions
 const displayMovements = function(movements) {
   containerMovements.innerHTML = '';
@@ -85,7 +86,7 @@ const displayMovements = function(movements) {
         <div class="movements__row">
           <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
           <div class="movements__date"></div>
-          <div class="movements__value">${mov}</div>
+          <div class="movements__value">${mov}€</div>
         </div>
         `;
 
@@ -96,7 +97,7 @@ const displayMovements = function(movements) {
 // Calculating current balance
 const calcAndDisplayBalance = (movements) => {
   const balance = movements.reduce((acc,movement) => acc + movement, 0);
-  labelBalance.textContent = `${balance} EUR`; 
+  labelBalance.textContent = `${balance}€`; 
 }
 
 // Calculating and displaying total withdrawals and deposits
@@ -107,9 +108,26 @@ const calcDisplaySummary = movements => {
   labelSumIn.textContent = `${deposits}€`
 }
 
-displayMovements(account1.movements);
-calcAndDisplayBalance(account1.movements);
-calcDisplaySummary(account1.movements);
+createUsernames(accounts);
+
+let currentAccount;
+btnLogin.addEventListener('click', (e) => {
+  e.preventDefault();
+  currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
+  
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}!`;
+    displayMovements(currentAccount.movements);
+    calcAndDisplayBalance(currentAccount.movements);
+    calcDisplaySummary(currentAccount.movements);
+    containerApp.style.opacity = '1';
+    // Clear the input fields
+    inputLoginUsername.value = inputLoginPin.value = '';
+    // making pin field loos its focus;
+    inputLoginPin.blur();
+  }  
+});
+
 
 
 
