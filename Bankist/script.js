@@ -77,9 +77,11 @@ const createUsernames = (accounts) => {
   })
 }
 // Displaying transactions
-const displayMovements = function(movements) {
+const displayMovements = function(movements, sort = false) {
   containerMovements.innerHTML = '';
-  movements.forEach(function(mov, i) {
+  const movs = sort ? movements.slice().sort((a,b) => a - b) : movements;
+  
+  movs.forEach(function(mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal'
     const html =
       `
@@ -103,8 +105,8 @@ const calcAndDisplayBalance = (acc) => {
 
 // Calculating and displaying total withdrawals and deposits
 const calcDisplaySummary = movements => {
-  const deposits = movements.filter(mov => mov > 0).reduce((acc, mov) => acc + mov)
-  const withdrawals = -movements.filter(mov => mov < 0).reduce((acc, mov) => acc + mov)
+  const deposits = movements.filter(mov => mov > 0).reduce((acc, mov) => acc + mov, 0);
+  const withdrawals = -movements.filter(mov => mov < 0).reduce((acc, mov) => acc + mov, 0);
   labelSumOut.textContent = `${withdrawals}€`
   labelSumIn.textContent = `${deposits}€`
 }
@@ -118,7 +120,7 @@ const updateUI = currentAccount => {
 
 createUsernames(accounts);
 
-// login functionality
+// Login functionality
 let currentAccount;
 btnLogin.addEventListener('click', (e) => {
   e.preventDefault();
@@ -173,3 +175,14 @@ btnLoan.addEventListener('click', (e) => {
   }
 })
 
+let sortingState = false
+btnSort.addEventListener('click', (e) => {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sortingState);
+  sortingState = !sortingState;
+})
+
+const overallBalance = accounts.map(acc => acc.movements).flat().reduce((acc,mov) => acc + mov);
+const overallBalanceWithFlatMap = accounts.flatMap(acc => acc.movements).reduce((acc,mov) => acc + mov);
+console.log(overallBalance);
+console.log(overallBalanceWithFlatMap);
