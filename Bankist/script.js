@@ -248,5 +248,8 @@ btnSort.addEventListener('click', function (e) {
   sorted = !sorted;
 });
 
-
-
+const now = new Date();
+// alternative to ternary is to use padStart(2,0) - this works because it will be
+// adding 0 until total string is 2 characters long, but if we have
+// 2 digits number, its already 2 digit long and so 0 will not be added
+labelDate.textContent = `${now.getDate() < 10 ? '0' + now.getDate() : now.getDate()}/${now.getMonth() < 10 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1}/${now.getFullYear()}, ${now.getHours()}:${now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes()}`
