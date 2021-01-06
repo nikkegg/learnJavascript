@@ -80,6 +80,11 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 /////////////////////////////////////////////////
 // Functions
+
+const formatCur = function(value, locale, currency) {
+  return new Intl.NumberFormat(locale, {style: 'currency', currency: currency}).format(value);  
+}
+
 const formatMovementDate = function(date,locale) {
   const now = new Date();
   const calcDaysPassed = (date1, date2) => Math.round(Math.abs(date2 - date1) /
@@ -100,14 +105,15 @@ const displayMovements = function (acc, sort = false) {
   movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const date = new Date(acc.movementsDates[i]);
-    const displayDate = formatMovementDate(date, acc.locale)
+    const displayDate = formatMovementDate(date, acc.locale);
+    const formattedMovValue = formatCur(mov, acc.locale, acc.currency)
     const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
         <div class="movements__date">${displayDate}</div>
-        <div class="movements__value">${mov}€</div>
+        <div class="movements__value">${formattedMovValue}</div>
       </div>
     `;
 
@@ -117,19 +123,19 @@ const displayMovements = function (acc, sort = false) {
 
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${acc.balance.toFixed(1)}€`;
+  labelBalance.textContent = formatCur(acc.balance, acc.locale, acc.currency);
 };
 
 const calcDisplaySummary = function (acc) {
   const incomes = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumIn.textContent = `${incomes}€`;
+  labelSumIn.textContent = formatCur(incomes, acc.locale, acc.currency);
 
   const out = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumOut.textContent = `${Math.abs(out).toFixed(1)}€`;
+  labelSumOut.textContent = formatCur(Math.abs(out), acc.locale, acc.currency);
 
   const interest = acc.movements
     .filter(mov => mov > 0)
@@ -139,7 +145,7 @@ const calcDisplaySummary = function (acc) {
       return int >= 1;
     })
     .reduce((acc, int) => acc + int, 0);
-  labelSumInterest.textContent = `${interest.toFixed(1)}€`;
+  labelSumInterest.textContent = formatCur(interest, acc.locale, acc.currency);;
 };
 
 const createUsernames = function (accs) {
@@ -275,16 +281,6 @@ btnSort.addEventListener('click', function (e) {
 // adding 0 until total string is 2 characters long, but if we have
 // 2 digits number, its already 2 digit long and so 0 will not be added
 // labelDate.textContent = `${now.getDate() < 10 ? '0' + now.getDate() : now.getDate()}/${now.getMonth() < 10 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1}/${now.getFullYear()}, ${now.getHours()}:${now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes()}`
-
-
-
-// To get a local from user try this:
-console.log(navigator.language);
-// Above gives language setting of the browser.
-
-
-
-
 
 
 
