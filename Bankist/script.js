@@ -80,7 +80,8 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 /////////////////////////////////////////////////
 // Functions
-const formatMovementDate = function(date) {
+const formatMovementDate = function(date,locale) {
+  const now = new Date();
   const calcDaysPassed = (date1, date2) => Math.round(Math.abs(date2 - date1) /
     (1000 * 60 * 60 * 24));
   const daysPassed = calcDaysPassed(new Date(), date);
@@ -88,10 +89,7 @@ const formatMovementDate = function(date) {
   if ( daysPassed === 0 ) return 'Today';
   if ( daysPassed === 1 ) return 'Yesterday';
   if ( daysPassed <= 7 ) return `${daysPassed} days ago`;
-  const day = `${date.getDate()}`.padStart(2, 0);
-  const month = `${now.getMonth() + 1}`.padStart(2, 0);
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
+  return new Intl.DateTimeFormat(locale).format(date);
 }
 
 const displayMovements = function (acc, sort = false) {
@@ -102,7 +100,7 @@ const displayMovements = function (acc, sort = false) {
   movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const date = new Date(acc.movementsDates[i]);
-    const displayDate = formatMovementDate(date)
+    const displayDate = formatMovementDate(date, acc.locale)
     const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
@@ -170,7 +168,7 @@ const updateUI = function (acc) {
 // Event handlers
 let currentAccount;
 
-btnLogin.addEventListener('click', function (e) {
+btnLogin.addEventListener('click', function(e) {
   // Prevent form from submitting
   e.preventDefault();
 
@@ -181,9 +179,17 @@ btnLogin.addEventListener('click', function (e) {
 
   if (currentAccount?.pin === +(inputLoginPin.value)) {
     // Display UI and message
-    labelWelcome.textContent = `Welcome back, ${
-      currentAccount.owner.split(' ')[0]
-    }`;
+    labelWelcome.textContent =
+      `Welcome back, ${
+      currentAccount.owner.split(' ')[0]}`;
+
+    // Intl api experiment
+    // passing ;anguage-region, and pass object to be formatted into .format
+    // to get different code: google iso lnguage code table - lingoe
+    // options take formating - can pass long for month, giving month nabme, 2-digit for month and year
+    // and weekday: long/short/narrow
+    const options = {hour: 'numeric', minute: 'numeric', day: 'numeric', month: 'numeric', year: 'numeric'}
+    labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options).format(new Date());
     containerApp.style.opacity = 100;
 
     // Clear input fields
@@ -264,8 +270,39 @@ btnSort.addEventListener('click', function (e) {
   sorted = !sorted;
 });
 
-const now = new Date();
+
 // alternative to ternary is to use padStart(2,0) - this works because it will be
 // adding 0 until total string is 2 characters long, but if we have
 // 2 digits number, its already 2 digit long and so 0 will not be added
-labelDate.textContent = `${now.getDate() < 10 ? '0' + now.getDate() : now.getDate()}/${now.getMonth() < 10 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1}/${now.getFullYear()}, ${now.getHours()}:${now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes()}`
+// labelDate.textContent = `${now.getDate() < 10 ? '0' + now.getDate() : now.getDate()}/${now.getMonth() < 10 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1}/${now.getFullYear()}, ${now.getHours()}:${now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes()}`
+
+
+
+// To get a local from user try this:
+console.log(navigator.language);
+// Above gives language setting of the browser.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
