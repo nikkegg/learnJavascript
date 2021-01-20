@@ -56,7 +56,7 @@ message.style.zIndex = '1000';
 message.style.height = Number.parseFloat(getComputedStyle(message).height,
   10) + 40 + 'px'
 
-// Learn more smooth scrolling
+// 'Learn more' link smooth scrolling
 // Adding scrolling. Coordinates to which to scoll to are given by top/left of the section1 + the 
 // amount scrolled already. This is because getBoundingClientRect is relevant to the top of the 
 // of the viewport and not to the top of the page.
@@ -71,14 +71,33 @@ btnScrollTo.addEventListener('click', (e) => {
   });
 })
 
-// Event delegation for nav menu
+// Page navigation. Not efficient solution, as it is using a loop
+// and copying the same functionality.
 
+// document.querySelectorAll('.nav__link').forEach(function(el) {
+//   el.addEventListener('click', function(e) {
+//     e.preventDefault();
+//     const id = e.currentTarget.getAttribute('href');
+//     const coordinates = select(id).getBoundingClientRect();
+//     window.scrollTo({top: coordinates.top + window.pageYOffset, left: coordinates.left + window.pageXOffset, behavior: 'smooth'});
+//   })
+// })
 
-
-
-
-
-
+// Same functionality but using event delegation and bubbling.
+// In here we attach event listener to the common parent element,
+// The fi d out where event happend  y using e.target,
+// and scroll to the id given in the href of this element.
+select('.nav__links').addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = e.target.getAttribute('href');
+      const coordinates = select(id).getBoundingClientRect();
+      window.scrollTo({
+        top: coordinates.top + window.pageYOffset,
+        left: coordinates
+          .left + window.pageXOffset,
+        behavior: 'smooth'
+      });
+})
 
 
 
