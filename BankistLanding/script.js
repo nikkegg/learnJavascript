@@ -88,17 +88,18 @@ btnScrollTo.addEventListener('click', (e) => {
 // The fi d out where event happend  y using e.target,
 // and scroll to the id given in the href of this element.
 select('.nav__links').addEventListener('click', (e) => {
-      e.preventDefault();
-      const id = e.target.getAttribute('href');
-      const coordinates = select(id).getBoundingClientRect();
-      window.scrollTo({
-        top: coordinates.top + window.pageYOffset,
-        left: coordinates
-          .left + window.pageXOffset,
-        behavior: 'smooth'
-      });
+  e.preventDefault();
+  if (e.target.classList.contains('nav__link')) {
+    const id = e.target.getAttribute('href');
+    const coordinates = select(id).getBoundingClientRect();
+    window.scrollTo({
+      top: coordinates.top + window.pageYOffset,
+      left: coordinates
+        .left + window.pageXOffset,
+      behavior: 'smooth'
+    });
+  }
 })
-
 
 
 
