@@ -1,13 +1,19 @@
 'use strict';
 
-///////////////////////////////////////
-// Modal window
+// Declarations
 const select = item => document.querySelector(item);
-const modal = document.querySelector('.modal');
-const overlay = document.querySelector('.overlay');
-const btnCloseModal = document.querySelector('.btn--close-modal');
+const modal = select('.modal');
+const overlay = select('.overlay');
+const btnCloseModal = select('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
+const btnScrollTo = select('.btn--scroll-to');
+const section1 = select('#section--1');
 
+
+///////////////////////////////////////
+
+
+// Modal windows
 const openModal = function(e) {
   e.preventDefault();
   modal.classList.remove('hidden');
@@ -30,23 +36,18 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-
-// Creating and inserting
-// .insertAdjacentHTML
-// Creates and stores dom element for cookie message, without displaying it.
+// Cookie message
 const message = document.createElement('div');
-const header = document.querySelector('.header')
+const header = select('.header')
 message.classList.add('cookie-message');
 message.innerHTML =
   'We use cookies because they are tasty! <button class="btn btn--close-cookie">Got it!</button>';
 header.append(message);
-document.querySelector('.btn--close-cookie').addEventListener('click',
+select('.btn--close-cookie').addEventListener('click',
   () => {
-    console.log(message.parentElement);
     message.remove()
   })
 
-// Adding cookie message
 message.style.backgroundColor = '#37383d';
 message.style.width = '100vw';
 message.style.position = 'fixed';
@@ -55,12 +56,12 @@ message.style.zIndex = '1000';
 message.style.height = Number.parseFloat(getComputedStyle(message).height,
   10) + 40 + 'px'
 
+// Learn more smooth scrolling
 // Adding scrolling. Coordinates to which to scoll to are given by top/left of the section1 + the 
 // amount scrolled already. This is because getBoundingClientRect is relevant to the top of the 
 // of the viewport and not to the top of the page.
 // Number of pixels scrolled to the left and right is given by window.pageX/YOffset
-const btnScrollTo = select('.btn--scroll-to');
-const section1 = select('#section--1');
+
 btnScrollTo.addEventListener('click', (e) => {
   const s1Coordinates = section1.getBoundingClientRect();
   window.scrollTo({
@@ -69,3 +70,24 @@ btnScrollTo.addEventListener('click', (e) => {
     behavior: 'smooth'
   });
 })
+
+// Event delegation for nav menu
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
