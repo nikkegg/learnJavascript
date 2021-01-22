@@ -1,16 +1,27 @@
 'use strict';
 
-// Declarations
+// Helper functions
 const select = item => document.querySelector(item);
+
+// Declarations
+
+// Modal
 const modal = select('.modal');
 const overlay = select('.overlay');
 const btnCloseModal = select('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
+
+// Smooth scrolling to an element
 const btnScrollTo = select('.btn--scroll-to');
 const section1 = select('#section--1');
+
+// Tabbed component
 const tabs = document.querySelectorAll('.operations__tab');
 const tabsContainer = select('.operations__tab-container');
 const tabsContent = document.querySelectorAll('.operations__content');
+
+// Navigation fade effect
+const nav = select('.nav');
 
 ///////////////////////////////////////
 
@@ -120,3 +131,10 @@ tabsContainer.addEventListener('click', e => {
   select(`.operations__content--${clicked.dataset.tab}`).classList.add(
     'operations__content--active');
 });
+
+// Nav fade animation
+nav.addEventListener('click', e => {
+  const clicked = e.target;
+  if (!clicked) return;
+  console.log(clicked);
+})
