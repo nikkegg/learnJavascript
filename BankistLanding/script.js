@@ -8,7 +8,9 @@ const btnCloseModal = select('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 const btnScrollTo = select('.btn--scroll-to');
 const section1 = select('#section--1');
-
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = select('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
 
 ///////////////////////////////////////
 
@@ -85,10 +87,11 @@ btnScrollTo.addEventListener('click', (e) => {
 
 // Same functionality but using event delegation and bubbling.
 // In here we attach event listener to the common parent element,
-// The fi d out where event happend  y using e.target,
+// Then find out where event happend  y using e.target,
 // and scroll to the id given in the href of this element.
 select('.nav__links').addEventListener('click', (e) => {
   e.preventDefault();
+
   if (e.target.classList.contains('nav__link')) {
     const id = e.target.getAttribute('href');
     const coordinates = select(id).getBoundingClientRect();
@@ -101,13 +104,19 @@ select('.nav__links').addEventListener('click', (e) => {
   }
 })
 
+// Tabbed component
 
-
-
-
-
-
-
-
-
-
+tabsContainer.addEventListener('click', e => {
+  // Find clicked tab
+  const clicked = e.target.closest('.btn');
+  if (!clicked) return;
+  // Activate tab
+  tabs.forEach(tab => tab.classList.remove(
+    'operations__tab--active'))
+  clicked.classList.add('operations__tab--active');
+  // Activate content area
+  tabsContent.forEach(c => c.classList.remove(
+    'operations__content--active'));
+  select(`.operations__content--${clicked.dataset.tab}`).classList.add(
+    'operations__content--active');
+});
