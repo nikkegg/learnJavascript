@@ -134,27 +134,17 @@ tabsContainer.addEventListener('click', e => {
 
 // Nav fade effect
 // Using mousover, because mousenter does not bubble.
-nav.addEventListener('mouseover', e => {
-  if (e.target.classList.contains('nav__link')) {
+const handleHover = function(e) {
+    if (e.target.classList.contains('nav__link')) {
     const link = e.target;
     const siblings = link.closest('.nav').querySelectorAll(
       '.nav__link');
     const logo = link.closest('.nav').querySelector('img');
     siblings.forEach(sibling => {
-      if (sibling != link) sibling.style.opacity = 0.5;
-      if (sibling != logo) logo.style.opacity = 0.5;
+      if (sibling != link) sibling.style.opacity = this;
+      if (sibling != logo) logo.style.opacity = this;
     })
   }
-})
-nav.addEventListener('mouseout', e => {
-   if (e.target.classList.contains('nav__link')) {
-    const link = e.target;
-    const siblings = link.closest('.nav').querySelectorAll(
-      '.nav__link');
-    const logo = link.closest('.nav').querySelector('img');
-    siblings.forEach(sibling => {
-      if (sibling != link) sibling.style.opacity = 1;
-      if (sibling != logo) logo.style.opacity = 1;
-    })
-  }
-})
+}
+nav.addEventListener('mouseover', handleHover.bind(0.5));
+nav.addEventListener('mouseout', handleHover.bind(1));
