@@ -70,8 +70,8 @@ message.style.height = Number.parseFloat(getComputedStyle(message).height,
   10) + 40 + 'px'
 
 // 'Learn more' link smooth scrolling
-// Adding scrolling. Coordinates to which to scoll to are given by top/left of the section1 + the 
-// amount scrolled already. This is because getBoundingClientRect is relevant to the top of the 
+// Adding scrolling. Coordinates to which to scoll to are given by top/left of the section1 + the
+// amount scrolled already. This is because getBoundingClientRect is relevant to the top of the
 // of the viewport and not to the top of the page.
 // Number of pixels scrolled to the left and right is given by window.pageX/YOffset
 
@@ -148,3 +148,16 @@ const handleHover = function(e) {
 }
 nav.addEventListener('mouseover', handleHover.bind(0.5));
 nav.addEventListener('mouseout', handleHover.bind(1));
+
+// Sticky navigation
+const initialCoords = section1.getBoundingClientRect()
+console.log(initialCoords)
+
+window.addEventListener('scroll', () => {
+  if (window.scrollY > initialCoords.top) {
+    nav.classList.add('sticky')
+  }
+  else {
+    nav.classList.remove('sticky');
+  }
+})
