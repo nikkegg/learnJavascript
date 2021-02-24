@@ -223,3 +223,40 @@ const loadImg = (entries, observer) => {
 const imageTargets = document.querySelectorAll('img[data-src]');
 const imageObserver = new IntersectionObserver(loadImg, { root: null, threshold: 0, rootMargin: '200px' });
 imageTargets.forEach(img => imageObserver.observe(img))
+
+// Carousel implementation
+const slides = [...document.querySelectorAll('.slide')];
+const maxSlide = slides.length - 1
+const btnLeft = select('.slider__btn--left');
+const btnRight = select('.slider__btn--right');
+let curSlide = 0;
+
+const goToSlide = slide => {
+  slides.forEach((s, index) => {
+    s.style.transform = `translateX(${100 * (index - slide)}%)`;
+  })
+}
+
+const nextSlide = () => {
+  if (curSlide === maxSlide) {
+    curSlide = 0;
+  }
+  else {
+    curSlide++;
+  }
+  goToSlide(curSlide);
+}
+
+const prevSlide = () => {
+  if (curSlide === 0) {
+    curSlide = maxSlide;
+  }
+  else {
+    curSlide--;
+  }
+  goToSlide(curSlide);
+}
+
+goToSlide(0);
+btnRight.addEventListener('click', nextSlide);
+btnLeft.addEventListener('click', prevSlide);
