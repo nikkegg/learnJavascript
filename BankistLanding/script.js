@@ -204,7 +204,7 @@ const revealSection = (entries, observer) => {
 const sectionObserver = new IntersectionObserver(revealSection, { root: null, threshold: 0.15 });
 
 allSections.forEach(section => {
-  section.classList.add('section--hidden');
+  // section.classList.add('section--hidden');
   sectionObserver.observe(section);
 })
 
@@ -227,14 +227,23 @@ imageTargets.forEach(img => imageObserver.observe(img))
 // Carousel implementation
 const slides = [...document.querySelectorAll('.slide')];
 const maxSlide = slides.length - 1
+const dotContainer = select('.dots')
 const btnLeft = select('.slider__btn--left');
 const btnRight = select('.slider__btn--right');
 let curSlide = 0;
+
+const activateDot = function (slide) {
+  document.querySelectorAll('.dots__dot').forEach(dot => {
+    dot.classList.remove('dots__dot--active')
+    document.querySelector(`.dots__dot[data-slide="${slide}"]`).classList.add('dots__dot--active');
+  })
+}
 
 const goToSlide = slide => {
   slides.forEach((s, index) => {
     s.style.transform = `translateX(${100 * (index - slide)}%)`;
   })
+  activateDot(curSlide);
 }
 
 const nextSlide = () => {
@@ -257,6 +266,27 @@ const prevSlide = () => {
   goToSlide(curSlide);
 }
 
+const createDots = () => {
+  slides.forEach((_, index) => {
+    dotContainer.insertAdjacentHTML('beforeend', `<button class='dots__dot' data-slide='${index}'></button>`)
+  })
+}
+
 goToSlide(0);
+createDots();
+activateDot(curSlide);
+
 btnRight.addEventListener('click', nextSlide);
 btnLeft.addEventListener('click', prevSlide);
+document.addEventListener('keydown', e => {
+  e.key === 'ArrowLeft' && prevSlide();
+  e.key === 'ArrowRight' && nextSlide();
+})
+
+dotContainer.addEventListener('click', e => {
+ if (e.target.classList.contains('dots__dot')) {
+   const slide = e.target.dataset.slide;
+   goToSlide(slide);
+   activateDot(slide);
+ }
+})
