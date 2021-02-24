@@ -232,6 +232,7 @@ const btnLeft = select('.slider__btn--left');
 const btnRight = select('.slider__btn--right');
 let curSlide = 0;
 
+// Functions
 const activateDot = function (slide) {
   document.querySelectorAll('.dots__dot').forEach(dot => {
     dot.classList.remove('dots__dot--active')
@@ -272,10 +273,15 @@ const createDots = () => {
   })
 }
 
-goToSlide(0);
-createDots();
-activateDot(curSlide);
+const initCarousel = () => {
+  goToSlide(0);
+  createDots();
+  activateDot(curSlide);
+}
 
+initCarousel();
+
+// Event handlers
 btnRight.addEventListener('click', nextSlide);
 btnLeft.addEventListener('click', prevSlide);
 document.addEventListener('keydown', e => {
