@@ -17,7 +17,7 @@ console.log(jonas.birthYear);
 // behind the scenes of new operator
 // 1. Empty object {} is created
 // 2. Function is called and this = {}
-// 3. {} is linked to a prototype
+// 3. {}'s prototype is automagically set to the prototype of the constructor (Person.prototype)
 // 4. {} which was created is returned, which is usually not empty
 
 console.log(jonas instanceof Person);
@@ -145,4 +145,54 @@ const account = {
 
 console.log(account.latest)
 
-// Static methods (class methods in ruby)
+// Object.cfeate syntax creates new object. As ana rgument, takes prototype which is to be linked to the newly created object, like below:
+
+const personProto = {
+  calcAge() {
+    console.log('I am gonna love forever!');
+  },
+  initialize(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  }
+};
+
+const steven = Object.create(personProto)
+steven.initialize('Steven', 1979);
+console.log(steven);
+
+// Coding challenge 2
+
+
+class CarCl {
+  constructor(make, speed) {
+    this.make = make;
+    this.speed = speed;
+  }
+
+  accelerate() {
+    this.speed += 10
+    console.log(this.speed)
+  }
+
+  break() {
+    this.speed -= 5
+    console.log(this.speed)
+  }
+
+  get speedUS() {
+    return this.speed / 1.6
+  }
+
+  set speedUS(miles) {
+    this.speed = miles * 1.6
+  }
+}
+
+const carCl1 = new CarCl('Ford', 120)
+carCl1.accelerate()
+carCl1.break()
+
+console.log(carCl1.speedUS)
+carCl1.speedUS = 500
+console.log(carCl1.speed)
