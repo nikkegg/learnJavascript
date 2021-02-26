@@ -196,3 +196,48 @@ carCl1.break()
 console.log(carCl1.speedUS)
 carCl1.speedUS = 500
 console.log(carCl1.speed)
+
+// Inheritance using constructor functions. To avoid du0licating code, we can call Person as a function with argument, but we have to bind this of Student to the this of Person. Can do this using call method. !st arg in call method sets the this keyword
+
+const Student = function(firstName, birthYear, course)
+ {
+   Person.call(this, firstName, birthYear);
+   this.course = course;
+ }
+
+//  Linking prototypes allows us
+ Student.prototype = Object.create(Person.prototype);
+ Student.prototype.introduce = function() {
+   console.log(`My name is ${this.firstName} and I study ${this.course}`)
+  }
+
+Student.prototype.constructor = Student;
+const mike = new Student('Mike', 2000, 'Computer Science');
+mike.introduce()
+mike.calcAge();
+console.dir(Student.prototype.constructor)
+console.log(mike.__proto__)
+console.log(mike.__proto__.__proto__)
+
+// Coding challenge 3
+
+const ElectricCar = function(make, speed, charge) {
+  Car.call(this, make, speed);
+  this.charge = charge;
+}
+
+ElectricCar.prototype = Object.create(Car.prototype);
+ElectricCar.prototype.constructor = ElectricCar;
+
+ElectricCar.prototype.chargeBattery = function(chargeTo) {
+  this.charge = chargeTo
+}
+
+ElectricCar.prototype.accelerate = function() {
+  this.speed += 20;
+  this.charge--;
+  console.log(`${this.make} going at ${this.speed} km/h with a charge of ${this.charge}%`)
+}
+
+const tesla = new ElectricCar('Tesla', 120, 23);
+
