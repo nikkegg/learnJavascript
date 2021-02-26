@@ -98,9 +98,18 @@ class PersonCl {
     this.birthYear = birthYear;
   }
 
+  // Class method syntax
+  static hey() {
+    console.log('lalala')
+  }
   calcAge() {
     console.log(2037 - this.birthYear)
   }
+}
+
+// This created class methods on Person object. So instances of Person do not inherit it.
+Person.hey = function() {
+  console.log('Hey there!');
 }
 
 const jessica = new PersonCl('jessica', 1996);
@@ -120,3 +129,20 @@ jessica.greet()
 // 3. Classes always are executed in strict mode
 
 // Setters and Getters in JS
+// For regulat objects.
+// By prepending get/set we amend normal methods into getters and setters
+// If you create setter with the same name as proeprty name e.g firstName in person object,
+// when running this.firstName = firstNamme, it will actually run set firstName method if it is defined. This is useful for input validations.
+
+const account = {
+  owner: 'Jonas',
+  movements: [100, 200, 300, 400],
+
+  get latest() {
+    return this.movements.slice(-1).pop()
+  }
+}
+
+console.log(account.latest)
+
+// Static methods (class methods in ruby)
