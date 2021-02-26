@@ -108,10 +108,6 @@ class PersonCl {
 }
 
 // This created class methods on Person object. So instances of Person do not inherit it.
-Person.hey = function() {
-  console.log('Hey there!');
-}
-
 const jessica = new PersonCl('jessica', 1996);
 console.log(jessica)
 jessica.calcAge()
@@ -241,3 +237,19 @@ ElectricCar.prototype.accelerate = function() {
 
 const tesla = new ElectricCar('Tesla', 120, 23);
 
+// Inheritance using ES6 Classes syntactic Sugar
+
+class StudentCl extends PersonCl {
+  constructor(firstName, birthYear, course) {
+    // calling parental constructor method. Always call super first, as it bind this keyword of the parent to the extending class
+    super(firstName, birthYear);
+    this.course = course;
+  }
+
+  introduce() {
+    console.log('lalal d');
+  }
+}
+
+const martha = new StudentCl('Marth', 1990, 'Computer Science')
+console.log(martha)
