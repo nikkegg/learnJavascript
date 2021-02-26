@@ -169,11 +169,13 @@ class CarCl {
   accelerate() {
     this.speed += 10
     console.log(this.speed)
+    return this
   }
 
   break() {
     this.speed -= 5
     console.log(this.speed)
+    return this
   }
 
   get speedUS() {
@@ -312,3 +314,29 @@ acc1.withdraw(140);
 
 // Chaining
 // returning this will mmake methods chainable.
+
+// Coding challenge 4.
+
+class ElectricCarCl extends CarCl {
+  #charge;
+  constructor(make, speed, charge) {
+    super(make, speed)
+    this.#charge = charge;
+  }
+
+  chargeBattery(chargeTo) {
+    this.#charge = chargeTo
+    return this
+  }
+
+  accelerate() {
+    this.speed += 20;
+    this.#charge--;
+    console.log(`${this.make} going at ${this.speed} km/h with a charge of ${this.#charge}%`)
+    return this
+  }
+}
+
+const rivian = new ElectricCarCl('Rivian', 120, 23);
+
+rivian.accelerate().accelerate()
