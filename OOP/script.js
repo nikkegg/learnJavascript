@@ -29,3 +29,57 @@ Person.prototype.calcAge = function () {
 };
 
 jonas.calcAge()
+
+console.log(jonas.__proto__)
+console.log(jonas.__proto__ === Person.prototype)
+console.log(Person.prototype.isPrototypeOf(jonas));
+console.log(Person.prototype.isPrototypeOf(Person));
+// not property of object, so not own property, but rather a property of a prototype.
+Person.prototype.species = 'Homo Sapiens';
+console.log(jonas.hasOwnProperty('species'));
+console.log(jonas.hasOwnProperty('firstName'));
+
+// Every object (e.g PErson) also has Object.protptye method available to it.
+// This is where __proto__ andhasOwnProperty methods come from.
+console.log(jonas.__proto__.__proto__)
+console.dir(Person.prototype.constructor)
+
+// Prototypes of Array. Creating array with array literals is just a shorthand for
+//  const a = new Array
+const arr = [3, 6, 4, 5, 6, 9, 3, 9, 9]
+console.log(arr.__proto__)
+console.log(arr.__proto__ === Array.prototype)
+
+// Having prototype mechanism allows to easily add custom methods to existing object classes in JS! Below example of custom unique method:
+
+Array.prototype.unique = function() {
+  return [...new Set(this)]
+}
+
+console.log(arr.unique())
+
+const h1 = document.querySelector('h1');
+console.dir(h1)
+
+// Coding Challenge 1
+
+const Car = function(make, speed) {
+  this.make = make;
+  this.speed = speed;
+}
+
+Car.prototype.accelerate = function() {
+  this.speed += 10
+  console.log(this.speed)
+}
+
+Car.prototype.break = function () {
+  this.speed -= 5
+  console.log(this.speed)
+}
+
+const car1 = new Car('BMW', 120);
+const car2 = new Car('Mercedez', 95);
+console.log(car1, car2);
+car1.break();
+car2.accelerate();
