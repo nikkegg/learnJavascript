@@ -83,3 +83,40 @@ const car2 = new Car('Mercedez', 95);
 console.log(car1, car2);
 car1.break();
 car2.accelerate();
+
+// ES Classes
+// Classes in ES6 is jsut syntactic sugar over constructor functions. Work exactly the same using prototypes.
+// So all method defined inside a class are still stored in the prototype
+
+// Class expression
+// const PersonCl = class {}
+
+// Class declaration
+class PersonCl {
+  constructor(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  }
+
+  calcAge() {
+    console.log(2037 - this.birthYear)
+  }
+}
+
+const jessica = new PersonCl('jessica', 1996);
+console.log(jessica)
+jessica.calcAge()
+
+// can also add emthod to class using prototype syntax
+
+PersonCl.prototype.greet = function() {
+  console.log(`Hey ${this.firstName}`)
+}
+
+jessica.greet()
+
+// 1.Unlike function declarations, class declarations are not Hoisted.
+// 2. Can pass classes into functions, return them and sgore them in vriables.
+// 3. Classes always are executed in strict mode
+
+// Setters and Getters in JS
