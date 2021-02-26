@@ -267,3 +267,48 @@ studentProto.hello = function() {
   console.log('yoooooo');
 }
 jay.initialize('Jupiter', 1900, 'Maths');
+
+// Another class example
+
+class Account {
+  constructor(owner, currency, pin) {
+    this.owner = owner;
+    this.currency = currency;
+    this.pin = pin;
+    this.movements = [];
+    this.locale = navigator.language;
+
+    console.log('Thanks for trusting us with your cash!')
+  }
+
+  deposit(amount) {
+    this.movements.push(amount);
+    return this
+  }
+
+  withdraw(amount) {
+    this.deposit(-amount);
+    return this
+  }
+
+  approveLoan(amount) {
+    return true
+  }
+
+  requestLoan(amount) {
+    if (this.approveLoan()) {
+     this.deposit(amount);
+     console.log('Loan is approved');
+    }
+    return this
+  }
+}
+
+const acc1 = new Account('Jonas', 'EUR', 1111, [])
+acc1.deposit(250);
+acc1.withdraw(140);
+
+// private methods and fields names are prepended with underscore.
+
+// Chaining
+// returning this will mmake methods chainable.
