@@ -21,9 +21,10 @@ class Workout {
   }
 
   _setDescription() {
-    // prettier-ignore
+
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     this.description = `${this.type[0].toUpperCase()}${this.type.slice(1)} on ${months[this.date.getMonth()]} ${this.date.getDate()}`;
+
   }
 }
 
@@ -123,7 +124,7 @@ class App {
 
     const validInputs = (...inputs) => inputs.every(input => Number.isFinite(input) && input > 0);
     e.preventDefault();
-    // get data from form
+
     const type = inputType.value;
     const distance = +inputDistance.value;
     const duration = +inputDuration.value;
@@ -236,5 +237,4 @@ class App {
 }
 
 const app = new App();
-// Add marker when user click on the map
 
