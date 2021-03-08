@@ -148,7 +148,7 @@ class App {
       autoClose: false,
       closeOnClick: false,
       className: `${workout.type}-popup`
-    })).setPopupContent('Workout')
+    })).setPopupContent(`${workout.type === 'running' ? '🏃‍♂️' : '🚵‍♂️' } ${workout.description}`)
       .openPopup();
   }
 
