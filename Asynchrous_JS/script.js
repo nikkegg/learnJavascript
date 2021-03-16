@@ -56,13 +56,20 @@ function getCountryAndNeighbour(country) {
 const request = fetch(`https://restcountries.eu/rest/v2/name/portugal`);
 console.log(request);
 
+const getJSON = function(url, errorMsg = 'Something went wrong') {
+  fetch(url).then(response => {
+    if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
+    return response.json()
+  });
+}
+
 const getCountryData = function(country) {
-  const request = fetch(`https://restcountries.eu/rest/v2/name/${country}`).then(response => response.json()).then(data =>
+  getJSON(`https://restcountries.eu/rest/v2/name/${country}`, 'Country not found').then(data =>
   {
     renderCountry(data[0]);
     const [neighbour] = data[0].borders;
     if (!neighbour) return;
-    return fetch(`https://restcountries.eu/rest/v2/alpha/${neighbour}`)
+    return getJSON(`https://restcountries.eu/rest/v2/alpha/${neighbour}`, 'Country not found')
   }).then(response => response.json()).then(data => renderCountry(data, 'neighbour')).catch(err =>
   {
     console.log(`${err} Failed to fetch!`);
@@ -79,5 +86,7 @@ const getCountryData = function(country) {
 // Error handling in promises
 
 btn.addEventListener('click', function() {
-  getCountryData('Austria')
+  getCountryData('austria')
 });
+
+// getCountryData('asasvasvas');
