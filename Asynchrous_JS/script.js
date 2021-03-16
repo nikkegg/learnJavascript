@@ -55,10 +55,16 @@ const request = fetch(`https://restcountries.eu/rest/v2/name/portugal`);
 console.log(request);
 
 const getCountryData = function(country) {
-  const request = fetch(`https://restcountries.eu/rest/v2/name/${country}`).then(response => response.json()).then(data => renderCountry(data[0]));
+  const request = fetch(`https://restcountries.eu/rest/v2/name/${country}`).then(response => response.json()).then(data =>
+  {
+    renderCountry(data[0]);
+    const [neighbour] = data[0].borders;
+    if (!neighbour) return;
+    return fetch(`https://restcountries.eu/rest/v2/alpha/${neighbour}`)
+  }).then(response => response.json()).then(data => renderCountry(data, 'neighbour'));
 }
 
-getCountryData('portugal');
+getCountryData('Austria');
 // Promise = an object which is used as a placholder for the future result of asynchrous call.
 // Promise lifecycle - pending, fulfilled, rejected.
 // Fetch returns a promise, on whih we can call then() method, hich run as soon as promise is fulfilled.
