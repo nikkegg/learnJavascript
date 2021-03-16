@@ -47,6 +47,11 @@ function getCountryAndNeighbour(country) {
     })
   });
 };
-getCountryAndNeighbour('usa');
-// getCountryAndNeighbour('lithuania');
-// getCountryAndNeighbour('russia');
+// getCountryAndNeighbour('usa');
+
+//2. Modern way - Fetch API;
+
+const request = fetch(`https://restcountries.eu/rest/v2/name/portugal`);
+console.log(request);
+// Promise = an object which is used as a placholder for the future result of asynchrous call.
+// Promise lifecycle - pending, fulfilled, rejected.
