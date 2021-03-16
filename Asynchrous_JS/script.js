@@ -6,6 +6,9 @@ const countriesContainer = document.querySelector('.countries');
 ///////////////////////////////////////
 // multiple ways of making HTTP request.
 // 1. Old way:
+const renderError = function(msg) {
+  countriesContainer.insertAdjacentText('beforeend', msg);
+}
 
 const renderCountry = (data, className = '') => {
   const html =
@@ -22,7 +25,6 @@ const renderCountry = (data, className = '') => {
     </article>
     `;
   countriesContainer.insertAdjacentHTML('beforeend', html);
-  countriesContainer.style.opacity = 1;
 }
 
 function getCountryAndNeighbour(country) {
@@ -61,11 +63,21 @@ const getCountryData = function(country) {
     const [neighbour] = data[0].borders;
     if (!neighbour) return;
     return fetch(`https://restcountries.eu/rest/v2/alpha/${neighbour}`)
-  }).then(response => response.json()).then(data => renderCountry(data, 'neighbour'));
-}
-
-getCountryData('Austria');
+  }).then(response => response.json()).then(data => renderCountry(data, 'neighbour')).catch(err =>
+  {
+    console.log(`${err} Failed to fetch!`);
+    renderError(`Something went wrong ${err.message}. Try again!`);
+  }).finally(() => {
+    countriesContainer.style.opacity = 1;
+  })
+};
 // Promise = an object which is used as a placholder for the future result of asynchrous call.
 // Promise lifecycle - pending, fulfilled, rejected.
-// Fetch returns a promise, on whih we can call then() method, hich run as soon as promise is fulfilled.
+// Fetch returns a promise, on whih we can call then() method, hich run as soon as promise is fulfilled. catch() is called hen promise is rejected. finally() is called always!
 // .json() method is available on all resolved values of the fetch method, i.e on response variable;
+// can add catch to the promise chain to handle error.
+// Error handling in promises
+
+btn.addEventListener('click', function() {
+  getCountryData('Austria')
+});
