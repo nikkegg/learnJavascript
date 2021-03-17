@@ -53,25 +53,20 @@ function getCountryAndNeighbour(country) {
 
 //2. Modern way - Fetch API;
 
-const request = fetch(`https://restcountries.eu/rest/v2/name/portugal`);
-console.log(request);
-
 const getJSON = function(url, errorMsg = 'Something went wrong') {
-  fetch(url).then(response => {
+  return fetch(url).then(response => {
     if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
-    return response.json()
+    return response.json();
   });
-}
+};
 
 const getCountryData = function(country) {
-  getJSON(`https://restcountries.eu/rest/v2/name/${country}`, 'Country not found').then(data =>
-  {
+  getJSON(`https://restcountries.eu/rest/v2/name/${country}`, 'Country not found').then(data => {
     renderCountry(data[0]);
     const [neighbour] = data[0].borders;
-    if (!neighbour) return;
+    if (!neighbour) throw new Error('No neighbours found');
     return getJSON(`https://restcountries.eu/rest/v2/alpha/${neighbour}`, 'Country not found')
-  }).then(response => response.json()).then(data => renderCountry(data, 'neighbour')).catch(err =>
-  {
+  }).then(data => renderCountry(data, 'neighbour')).catch(err => {
     console.log(`${err} Failed to fetch!`);
     renderError(`Something went wrong ${err.message}. Try again!`);
   }).finally(() => {
@@ -85,8 +80,21 @@ const getCountryData = function(country) {
 // can add catch to the promise chain to handle error.
 // Error handling in promises
 
+const whereAmI = function(lat, lng) {
+  return fetch(`https://geocode.xyz/${lat},${lng}?json=1`).then(response => {
+    if (!response.ok) throw new Error(`Too many requests per second. Status: ${response.status}`);
+    return response.json();
+  }).then(data => {
+    console.log(`You are in ${data.country}, ${data.city}`);
+    return data.country;
+  }).catch(err => {
+    console.log(`Something went wrong: ${err.message}.`);
+  })
+}
+
 btn.addEventListener('click', function() {
-  getCountryData('austria')
+  const country = [whereAmI(52.508, 13.381), whereAmI(40.037, 34.873), whereAmI(-33.933, 18.474)];
+  country.forEach(country => country.then(result => getCountryData(result)))
 });
 
 // getCountryData('asasvasvas');
