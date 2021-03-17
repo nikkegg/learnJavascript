@@ -92,10 +92,6 @@ const whereAmI = function(lat, lng) {
   })
 }
 
-btn.addEventListener('click', function() {
-  const country = [whereAmI(52.508, 13.381), whereAmI(40.037, 34.873), whereAmI(-33.933, 18.474)];
-  country.forEach(country => country.then(result => getCountryData(result)))
-});
 
 // getCountryData('asasvasvas');
 
@@ -103,11 +99,49 @@ btn.addEventListener('click', function() {
 // promise, setTimeout callback
 // If we add second promise, we can see that callbacks using timer can take much longer than specified time - this is because promises geet prioritised first
 // in microtask queue.
-console.log('Test start');
-setTimeout(() => console.log('0 sec timer'), 0);
-Promise.resolve('Resolved promise 1').then(response => console.log(response));
-Promise.resolve('Resolve promise 2').then(response => {
-  for (let i = 0; i < 10000000000; i++) {}
-  console.log(response);
+// console.log('Test start');
+// setTimeout(() => console.log('0 sec timer'), 0);
+// Promise.resolve('Resolved promise 1').then(response => console.log(response));
+// Promise.resolve('Resolve promise 2').then(response => {
+  //   for (let i = 0; i < 10000000000; i++) {}
+  //   console.log(response);
+  // })
+  // console.log('Test end');
+
+  btn.addEventListener('click', function() {
+    const country = [whereAmI(52.508, 13.381), whereAmI(40.037, 34.873), whereAmI(-33.933, 18.474)];
+    country.forEach(country => country.then(result => getCountryData(result)))
+  });
+
+  // Creating promises
+
+  const lotteryPromise = new Promise(function(resolve, reject) {
+    console.log('Lottery draw is happening!');
+    setTimeout(function() {
+    if (Math.random() >= 0.5) {
+      resolve('You WIN!');
+    } else {
+      reject(new Error('You lost!'));
+    }}, 2000)
+  });
+
+lotteryPromise.then(resp => console.log(resp)).catch(err => console.log(err));
+
+// Example of 'promisifying'. The benefit of beloew is that you escape callback hell, as you can return promise at each stage and chaing another promise in a linear way.
+
+const wait = function(seconds) {
+  return new Promise(function(resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
+wait(2)
+.then(() => {
+  console.log('i waited for 2 seconds');
+  return wait(3)
 })
-console.log('Test end');
+.then(() => console.log('I waited for 3 seconds'));
+
+// Creating fulffiled/rejected promises immediaitely
+Promise.resolve('abc').then(resp => console.log(resp)); // creates resolved promise, argument is returned value
+Promise.reject(new Error('abs')).catch(err => console.log(err));
