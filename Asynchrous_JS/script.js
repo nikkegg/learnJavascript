@@ -115,33 +115,50 @@ const whereAmI = function(lat, lng) {
 
   // Creating promises
 
-  const lotteryPromise = new Promise(function(resolve, reject) {
-    console.log('Lottery draw is happening!');
-    setTimeout(function() {
-    if (Math.random() >= 0.5) {
-      resolve('You WIN!');
-    } else {
-      reject(new Error('You lost!'));
-    }}, 2000)
-  });
+  // const lotteryPromise = new Promise(function(resolve, reject) {
+  //   console.log('Lottery draw is happening!');
+  //   setTimeout(function() {
+  //   if (Math.random() >= 0.5) {
+  //     resolve('You WIN!');
+  //   } else {
+  //     reject(new Error('You lost!'));
+  //   }}, 2000)
+  // });
 
-lotteryPromise.then(resp => console.log(resp)).catch(err => console.log(err));
+// lotteryPromise.then(resp => console.log(resp)).catch(err => console.log(err));
 
 // Example of 'promisifying'. The benefit of beloew is that you escape callback hell, as you can return promise at each stage and chaing another promise in a linear way.
 
-const wait = function(seconds) {
-  return new Promise(function(resolve) {
-    setTimeout(resolve, seconds * 1000);
+// const wait = function(seconds) {
+//   return new Promise(function(resolve) {
+//     setTimeout(resolve, seconds * 1000);
+//   });
+// };
+
+// wait(2)
+// .then(() => {
+//   console.log('i waited for 2 seconds');
+//   return wait(3)
+// })
+// .then(() => console.log('I waited for 3 seconds'));
+
+// Creating fulffiled/rejected promises immediaitely
+// Promise.resolve('abc').then(resp => console.log(resp)); // creates resolved promise, argument is returned value
+// Promise.reject(new Error('abs')).catch(err => console.log(err));
+
+// clearly geolocation api works in async way - console.log appears first.
+// navigator.geolocation.getCurrentPosition(position => console.log(position), err => console.log(err));
+// console.log('Getting position');
+
+const getPosition = function() {
+  return new Promise(function(resolve, reject) {
+    // navigator.geolocation.getCurrentPosition(position => resolve(position), err => reject(err));
+    // a simpler way:
+    navigator.geolocation.getCurrentPosition(resolve, reject);
   });
 };
 
-wait(2)
-.then(() => {
-  console.log('i waited for 2 seconds');
-  return wait(3)
-})
-.then(() => console.log('I waited for 3 seconds'));
-
-// Creating fulffiled/rejected promises immediaitely
-Promise.resolve('abc').then(resp => console.log(resp)); // creates resolved promise, argument is returned value
-Promise.reject(new Error('abs')).catch(err => console.log(err));
+getPosition().then(res => {
+  const {latitude, longitude} = res.coords
+  return [latitude, longitude]
+}).then(res => whereAmI(res)).then(res => getCountryData(res));
