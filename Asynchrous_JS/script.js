@@ -98,3 +98,16 @@ btn.addEventListener('click', function() {
 });
 
 // getCountryData('asasvasvas');
+
+// Event loop in practice. Belo demonstrates how microtask queue get priority over callback queue. Order of execution is: first console log, last console.log
+// promise, setTimeout callback
+// If we add second promise, we can see that callbacks using timer can take much longer than specified time - this is because promises geet prioritised first
+// in microtask queue.
+console.log('Test start');
+setTimeout(() => console.log('0 sec timer'), 0);
+Promise.resolve('Resolved promise 1').then(response => console.log(response));
+Promise.resolve('Resolve promise 2').then(response => {
+  for (let i = 0; i < 10000000000; i++) {}
+  console.log(response);
+})
+console.log('Test end');
