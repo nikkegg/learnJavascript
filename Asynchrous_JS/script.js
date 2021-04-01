@@ -221,12 +221,19 @@ createImage('img-1.jpg')
 // console.log('Proof that function test is async');
 
 const whereAmI = async function(country) {
+  try {
   const myCoordinates = await getPosition();
   const { latitude: lat, longitude: lng } = myCoordinates.coords;
-  let myCountry = await (await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)).json();
-  getCountryData(myCountry.country);
+  const myCountryResp = await (await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`))
+  if (!myCountryResp.ok) {
+    throw new Error('Cant find the country pumpurum');
+  }
+  const myCountryJSON = await myCountryResp.json();
+  getCountryData(myCountryJSON.country);
+  } catch (err) {
+    console.error(err);
+    renderError(`${err.message}`);
+  }
 }
 
 whereAmI('portugal');
-
-// Error handling when using async await
