@@ -1,8 +1,9 @@
 'use strict';
 
 const btn = document.querySelector('.btn-country');
+btn.style.display = 'none';
 const countriesContainer = document.querySelector('.countries');
-
+const images = document.querySelector('.images')
 ///////////////////////////////////////
 // multiple ways of making HTTP request.
 // 1. Old way:
@@ -80,17 +81,17 @@ const getCountryData = function(country) {
 // can add catch to the promise chain to handle error.
 // Error handling in promises
 
-const whereAmI = function(lat, lng) {
-  return fetch(`https://geocode.xyz/${lat},${lng}?json=1`).then(response => {
-    if (!response.ok) throw new Error(`Too many requests per second. Status: ${response.status}`);
-    return response.json();
-  }).then(data => {
-    console.log(`You are in ${data.country}, ${data.city}`);
-    return data.country;
-  }).catch(err => {
-    console.log(`Something went wrong: ${err.message}.`);
-  })
-}
+// const whereAmI = function(lat, lng) {
+//   return fetch(`https://geocode.xyz/${lat},${lng}?json=1`).then(response => {
+//     if (!response.ok) throw new Error(`Too many requests per second. Status: ${response.status}`);
+//     return response.json();
+//   }).then(data => {
+//     console.log(`You are in ${data.country}, ${data.city}`);
+//     return data.country;
+//   }).catch(err => {
+//     console.log(`Something went wrong: ${err.message}.`);
+//   })
+// }
 
 
 // getCountryData('asasvasvas');
@@ -108,10 +109,10 @@ const whereAmI = function(lat, lng) {
   // })
   // console.log('Test end');
 
-  btn.addEventListener('click', function() {
-    const country = [whereAmI(52.508, 13.381), whereAmI(40.037, 34.873), whereAmI(-33.933, 18.474)];
-    country.forEach(country => country.then(result => getCountryData(result)))
-  });
+  // btn.addEventListener('click', function() {
+  //   const country = [whereAmI(52.508, 13.381), whereAmI(40.037, 34.873), whereAmI(-33.933, 18.474)];
+  //   country.forEach(country => country.then(result => getCountryData(result)))
+  // });
 
   // Creating promises
 
@@ -129,11 +130,11 @@ const whereAmI = function(lat, lng) {
 
 // Example of 'promisifying'. The benefit of beloew is that you escape callback hell, as you can return promise at each stage and chaing another promise in a linear way.
 
-// const wait = function(seconds) {
-//   return new Promise(function(resolve) {
-//     setTimeout(resolve, seconds * 1000);
-//   });
-// };
+const wait = function(seconds) {
+  return new Promise(function(resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
 
 // wait(2)
 // .then(() => {
@@ -150,15 +151,78 @@ const whereAmI = function(lat, lng) {
 // navigator.geolocation.getCurrentPosition(position => console.log(position), err => console.log(err));
 // console.log('Getting position');
 
-const getPosition = function() {
-  return new Promise(function(resolve, reject) {
-    // navigator.geolocation.getCurrentPosition(position => resolve(position), err => reject(err));
-    // a simpler way:
-    navigator.geolocation.getCurrentPosition(resolve, reject);
-  });
-};
+// const getPosition = function() {
+//   return new Promise(function(resolve, reject) {
+//     // navigator.geolocation.getCurrentPosition(position => resolve(position), err => reject(err));
+//     // a simpler way:
+//     navigator.geolocation.getCurrentPosition(resolve, reject);
+//   });
+// };
 
-getPosition().then(res => {
-  const {latitude, longitude} = res.coords
-  return [latitude, longitude]
-}).then(res => whereAmI(res)).then(res => getCountryData(res));
+// getPosition().then(res => {
+//   const {latitude, longitude} = res.coords
+//   return [latitude, longitude]
+// }).then(res => whereAmI(res)).then(res => getCountryData(res));
+let currentImg;
+const createImage = imgPath => {
+  return new Promise(function(resolve, reject) {
+    const img = document.createElement('img');
+    img.src = `/img/${imgPath}`;
+    img.addEventListener('load', function() {
+      images.append(img);
+      resolve(img);
+    })
+    img.addEventListener('error', function () {
+      reject(new Error('Something went wrong'));
+    })
+    // fetch(img.src).then(response => {
+    //   if (!response.ok) reject(new Error(`Something went wrong - status ${response.status}`));
+    //   images.append(img);
+    //   resolve(img);
+    // })
+  });
+}
+createImage('img-1.jpg')
+.then(img => {
+  currentImg = img;
+  return wait(2)
+})
+.then(() => {
+  currentImg.style.display = 'none';
+  return createImage('img-2.jpg');
+})
+.then(img => {
+    currentImg = img;
+    return wait(2)
+  })
+.then(() => {
+    currentImg.style.display = 'none';
+    return createImage('img-3.jpg');
+  })
+.then(response => wait(2))
+.then(() => currentImg.style.display ='none')
+.catch(err => console.error(err.message))
+
+
+// Async await
+// Async makes functions execute asynchrounsly and return a Promise.
+// await statement = reuqires a Promise. Stops execution of the function until promise is fulfilled. The reason why this is still non-blocking is because of the async keyword - it does not run on main execution thread.
+// So inside the async function code is beign executed synchronously, which is why console.log are appear in th4 same order as they were written
+// Basically await provides convinient way of extracting values of the Promises.
+
+
+// const test = async function(country) {
+//   await fetch(`https://restcountries.eu/rest/v2/name/${country}`).then(resp => console.log('pum'));
+//   console.log('lalala')
+//   console.log('purum')
+// }
+
+// test('Portugal')
+// console.log('Proof that function test is async');
+
+const whereAmI = async function(country) {
+  const [myLocation] = await (await fetch(`https://restcountries.eu/rest/v2/name/${country}`)).json();
+  console.log(myLocation);
+}
+
+whereAmI('portugal');
