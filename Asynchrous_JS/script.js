@@ -151,13 +151,13 @@ const wait = function(seconds) {
 // navigator.geolocation.getCurrentPosition(position => console.log(position), err => console.log(err));
 // console.log('Getting position');
 
-// const getPosition = function() {
-//   return new Promise(function(resolve, reject) {
-//     // navigator.geolocation.getCurrentPosition(position => resolve(position), err => reject(err));
-//     // a simpler way:
-//     navigator.geolocation.getCurrentPosition(resolve, reject);
-//   });
-// };
+const getPosition = function() {
+  return new Promise(function(resolve, reject) {
+    // navigator.geolocation.getCurrentPosition(position => resolve(position), err => reject(err));
+    // a simpler way:
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
 
 // getPosition().then(res => {
 //   const {latitude, longitude} = res.coords
@@ -221,8 +221,12 @@ createImage('img-1.jpg')
 // console.log('Proof that function test is async');
 
 const whereAmI = async function(country) {
-  const [myLocation] = await (await fetch(`https://restcountries.eu/rest/v2/name/${country}`)).json();
-  console.log(myLocation);
+  const myCoordinates = await getPosition();
+  const { latitude: lat, longitude: lng } = myCoordinates.coords;
+  let myCountry = await (await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)).json();
+  getCountryData(myCountry.country);
 }
 
 whereAmI('portugal');
+
+// Error handling when using async await
