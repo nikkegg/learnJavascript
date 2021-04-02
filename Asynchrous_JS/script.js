@@ -175,11 +175,6 @@ const createImage = imgPath => {
     img.addEventListener('error', function () {
       reject(new Error('Something went wrong'));
     })
-    // fetch(img.src).then(response => {
-    //   if (!response.ok) reject(new Error(`Something went wrong - status ${response.status}`));
-    //   images.append(img);
-    //   resolve(img);
-    // })
   });
 }
 // createImage('img-1.jpg')
@@ -277,7 +272,7 @@ const get3Countries = async function(c1, c2, c3) {
   }
 }
 
-get3Countries('tanzania', 'portugal', 'russia')
+// get3Countries('tanzania', 'portugal', 'russia')
 
 // Promise combinators: race, settled, any/
 // Resulting value of Promise.race is the first resolved promise. Race shortcuits if one of the Promises is rejected.
@@ -299,10 +294,20 @@ const timeout = function(sec) {
   })
 }
 
-Promise.race([getJSON(`https://restcountries.eu/rest/v2/name/italy`), timeout(0.2)]).then(resp => console.log(resp[0])).catch(err => console.error(err.message));
+// Promise.race([getJSON(`https://restcountries.eu/rest/v2/name/italy`), timeout(0.2)]).then(resp => console.log(resp[0])).catch(err => console.error(err.message));
 
-Promise.allSettled([
-  Promise.resolve('Success'),
-  Promise.reject('Error'),
-  Promise.resolve('Success')
-]).then(res => console.log(res));
+// Promise.allSettled([
+//   Promise.resolve('Success'),
+//   Promise.reject('Error'),
+//   Promise.resolve('Success')
+// ]).then(res => console.log(res));
+
+// Coding challenge 2
+const loadAll = async function(images) {
+  const imgs = images.map(image => createImage(image));
+  // const imgs = images.map(async image => await createImage(image));
+  const data = await Promise.all(imgs);
+  data.forEach(dataPoint => dataPoint.classList.add('paralell'))
+}
+
+loadAll(['img-1.jpg', 'img-2.jpg', 'img-3.jpg']);
