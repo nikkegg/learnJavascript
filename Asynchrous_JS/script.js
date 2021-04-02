@@ -262,35 +262,33 @@ whereAmI().then(resp => console.log(resp)).catch(err => console.error(`2. ${err.
 
 
 
-// Below promises run sequentially because of await. However it is possible to run them in parallel using Promise.all. You can see the difference by inspecting Chromes Network tab - request for all 3 countries runs in parallell
-// const get3Countries = async function(c1, c2, c3) {
-//   try {
-//     // const [data1] = await getJSON(`https://restcountries.eu/rest/v2/name/${c1}`);
-//     // const [data2] = await getJSON(`https://restcountries.eu/rest/v2/name/${c2}`);
-//     // const [data3] = await getJSON(`https://restcountries.eu/rest/v2/name/${c3}`);
-//     const data = await Promise.all([
-//       getJSON(`https://restcountries.eu/rest/v2/name/${c1}`),
-//       getJSON(`https://restcountries.eu/rest/v2/name/${c2}`),
-//       getJSON(`https://restcountries.eu/rest/v2/name/${c3}`)
-//     ]);
-//     console.log(data);
-//   } catch(err) {
-//     console.log(err);
-//   }
-// }
+// Below promises run sequentially because of await. However it is possible to run them in parallel using Promise.all. You can see the difference by inspecting Chromes Network tab - request for all 3 countries runs in parallel
+// Important note Promise.all shortcuits if one of the promises rejects. If this is undesired behaviour, use Promise.allSettled instead, which behaves the same Promise.all but does not shortcircuit if one of the promises gets rejected.
+const get3Countries = async function(c1, c2, c3) {
+  try {
+    const data = await Promise.all([
+      getJSON(`https://restcountries.eu/rest/v2/name/${c1}`),
+      getJSON(`https://restcountries.eu/rest/v2/name/${c2}`),
+      getJSON(`https://restcountries.eu/rest/v2/name/${c3}`)
+    ]);
+    console.log(data);
+  } catch(err) {
+    console.log(err);
+  }
+}
 
-// get3Countries('tanzania', 'portugal', 'russia')
+get3Countries('tanzania', 'portugal', 'russia')
 
 // Promise combinators: race, settled, any/
-// Resulting value of Promise.race is the first resolved promise.
-(async function () {
-  const res = await Promise.race([
-    getJSON(`https://restcountries.eu/rest/v2/name/italy`),
-    getJSON(`https://restcountries.eu/rest/v2/name/egypt`),
-    getJSON(`https://restcountries.eu/rest/v2/name/mexico`)
-  ]);
-  console.log(res[0]);
-})();
+// Resulting value of Promise.race is the first resolved promise. Race shortcuits if one of the Promises is rejected.
+// (async function () {
+//   const res = await Promise.race([
+//     getJSON(`https://restcountries.eu/rest/v2/name/italy`),
+//     getJSON(`https://restcountries.eu/rest/v2/name/egypt`),
+//     getJSON(`https://restcountries.eu/rest/v2/name/mexico`)
+//   ]);
+//   console.log(res[0]);
+// })();
 
 // With the timeout function below, canuse race when calling a promise - if it takes too long for promise to be fulfilled (e.g user has slow minternet connection, the fetch will be aborted with rejection from timeout function.)
 const timeout = function(sec) {
@@ -302,3 +300,9 @@ const timeout = function(sec) {
 }
 
 Promise.race([getJSON(`https://restcountries.eu/rest/v2/name/italy`), timeout(0.2)]).then(resp => console.log(resp[0])).catch(err => console.error(err.message));
+
+Promise.allSettled([
+  Promise.resolve('Success'),
+  Promise.reject('Error'),
+  Promise.resolve('Success')
+]).then(res => console.log(res));
