@@ -182,33 +182,33 @@ const createImage = imgPath => {
     // })
   });
 }
-createImage('img-1.jpg')
-.then(img => {
-  currentImg = img;
-  return wait(2)
-})
-.then(() => {
-  currentImg.style.display = 'none';
-  return createImage('img-2.jpg');
-})
-.then(img => {
-    currentImg = img;
-    return wait(2)
-  })
-.then(() => {
-    currentImg.style.display = 'none';
-    return createImage('img-3.jpg');
-  })
-.then(response => wait(2))
-.then(() => currentImg.style.display ='none')
-.catch(err => console.error(err.message))
+// createImage('img-1.jpg')
+// .then(img => {
+//   currentImg = img;
+//   return wait(2)
+// })
+// .then(() => {
+//   currentImg.style.display = 'none';
+//   return createImage('img-2.jpg');
+// })
+// .then(img => {
+//     currentImg = img;
+//     return wait(2)
+//   })
+// .then(() => {
+//     currentImg.style.display = 'none';
+//     return createImage('img-3.jpg');
+//   })
+// .then(response => wait(2))
+// .then(() => currentImg.style.display ='none')
+// .catch(err => console.error(err.message))
 
 
 // Async await
 // Async makes functions execute asynchrounsly and return a Promise.
 // await statement = reuqires a Promise. Stops execution of the function until promise is fulfilled. The reason why this is still non-blocking is because of the async keyword - it does not run on main execution thread.
 // So inside the async function code is beign executed synchronously, which is why console.log are appear in th4 same order as they were written
-// Basically await provides convinient way of extracting values of the Promises.
+// Basically await provides convinient way of extracting values of the Promises. But it onlt works this way inside async function! If you store value of async function in a varibale, you will get a PRomise.
 
 
 // const test = async function(country) {
@@ -230,10 +230,54 @@ const whereAmI = async function(country) {
   }
   const myCountryJSON = await myCountryResp.json();
   getCountryData(myCountryJSON.country);
+  return 'Experiment'
   } catch (err) {
     console.error(err);
     renderError(`${err.message}`);
+
+    // Reject promise returned from the async function. Do this so you can catch it with catch handler/
+    throw err;
   }
 }
 
-whereAmI('portugal');
+
+// Returning values from async functions. If you try and store value of asyn function into variable, you will get a promise (container which you can not use). So if you want to get value out of the promise you have to chain then or use immedistely invoked functions expressions..
+
+// handling with then
+const city = whereAmI();
+console.log('1: Will get location');
+whereAmI().then(resp => console.log(resp)).catch(err => console.error(`2. ${err.message}`)).finally(() => console.log('3: Finished getting location'));
+// handlin with IIFEs
+(async function() {
+  try {
+    console.log('1: Will get location');
+    const location = await whereAmI();
+    console.log(`2. ${location}`)
+  } catch(err) {
+      console.error(`2. ${err.message}`)
+  }
+  console.log('3: Finished getting location')
+})()
+
+
+
+// Below promises run sequentially because of await. However it is possible to run them in parallel using Promise.all. You can see the difference by inspecting BNetwork tab.
+const get3Countries = async function(c1, c2, c3) {
+  try {
+    // const [data1] = await getJSON(`https://restcountries.eu/rest/v2/name/${c1}`);
+    // const [data2] = await getJSON(`https://restcountries.eu/rest/v2/name/${c2}`);
+    // const [data3] = await getJSON(`https://restcountries.eu/rest/v2/name/${c3}`);
+    const data = await Promise.all([
+      await getJSON(`https://restcountries.eu/rest/v2/name/${c1}`),
+      await getJSON(`https://restcountries.eu/rest/v2/name/${c2}`),
+      await getJSON(`https://restcountries.eu/rest/v2/name/${c3}`)
+    ]);
+    console.log(data);
+  } catch(err) {
+    console.log(err);
+  }
+}
+
+// get3Countries('tanzania', 'portugal', 'russia')
+
+// Promise combinators: race, settled, any/
