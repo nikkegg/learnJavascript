@@ -307,7 +307,7 @@ const loadAll = async function(images) {
   const imgs = images.map(image => createImage(image));
   // const imgs = images.map(async image => await createImage(image));
   const data = await Promise.all(imgs);
-  data.forEach(dataPoint => dataPoint.classList.add('paralell'))
+  data.forEach(dataPoint => dataPoint.classList.add('parallel'))
 }
 
 loadAll(['img-1.jpg', 'img-2.jpg', 'img-3.jpg']);
